@@ -17,8 +17,8 @@ logging.basicConfig(
 )
 
 # Enforce secure credentials architecture configuration mapping
-ADMIN_USER = st.secrets.get("ADMIN_USER", "admin")
-ADMIN_PASSWORD = st.secrets.get("ADMIN_PASSWORD", "admin123")
+ADMIN_USER = st.secrets["ADMIN_USER"] if "ADMIN_USER" in st.secrets else "admin"
+ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"] if "ADMIN_PASSWORD" in st.secrets else "admin123"
 
 @st.cache_resource
 def load_vectorstore():
@@ -93,10 +93,10 @@ def main():
                     with st.spinner("Synthesizing context matrix paths..."):
                         try:
                             # Initialize open-source high-context inference synthesis engine
+                            os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
                             llm = HuggingFaceEndpoint(
                                 repo_id="meta-llama/Meta-Llama-3-8B-Instruct",
                                 temperature=temperature_value,
-                                huggingfacehub_api_token=hf_token,
                                 max_new_tokens=512
                             )
                             
