@@ -1,45 +1,137 @@
+---
+```python
 import streamlit as st
-
-from langchain_huggingface import HuggingFaceEmbeddings
-
+import os
+import time
+import logging
+from langchain_huggingface import HuggingFaceEmbeddings, HuggingFaceEndpoint
 from langchain_community.vectorstores import FAISS
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate
 
+# Ensure log directory layout exists
+os.makedirs("logs", exist_ok=True)
+logging.basicConfig(
+    filename="logs/rag_system.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
+# Enforce secure credentials architecture configuration mapping
+ADMIN_USER = st.secrets.get("ADMIN_USER", "admin")
+ADMIN_PASSWORD = st.secrets.get("ADMIN_PASSWORD", "admin123")
+
+@st.cache_resource
 def load_vectorstore():
-
-    embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
-
-    vectorstore = FAISS.load_local(
-        "vectorstore",
-        embeddings,
-        allow_dangerous_deserialization=True
-    )
-
-    return vectorstore
-
+    try:
+        embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        vectorstore = FAISS.load_local(
+            "vectorstore",
+            embeddings,
+            allow_dangerous_deserialization=True
+        )
+        return vectorstore
+    except Exception as e:
+        logging.error(f"Failed to load vector store: {str(e)}")
+        st.error("⚠️ Local Vectorstore not found. Please run 'python ingest.py' first.")
+        return None
 
 def main():
+    st.set_page_config(page_title="Enterprise RAG Ecosystem", page_icon="📊", layout="wide")
+    
+    # Secure Administrative Login Interface Gateway
+    st.sidebar.title("🔐 Production Gateway")
+    if "authenticated" not in st.session_state:
+        st.session_state["authenticated"] = False
 
-    st.title("Semantic Search System")
+    if not st.session_state["authenticated"]:
+        user_input = st.sidebar.text_input("Username")
+        password_input = st.sidebar.text_input("Password", type="password")
+        if st.sidebar.button("Login"):
+            if user_input == ADMIN_USER and password_input == ADMIN_PASSWORD:
+                st.session_state["authenticated"] = True
+                st.rerun()
+            else:
+                st.sidebar.error("❌ Invalid Credentials")
+        st.stop()
 
-    question = st.text_input("Ask a question from your documents:")
+    # Main Application Post-Authentication UI Layout
+    st.title("📊 Enterprise Knowledge Base RAG Ecosystem")
+    st.markdown("---")
+
+    # Interactive Hyperparameter Adjustments Control Panel
+    st.sidebar.subheader("🎛️ Retrieval Configuration")
+    k_value = st.sidebar.slider("Retrieval Chunk Count (k)", min_value=1, max_value=5, value=3)
+    temperature_value = st.sidebar.slider("LLM Temperature", min_value=0.0, max_value=1.0, value=0.2)
+
+    # Validate environment initialization credentials parameter availability
+    hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN") or st.secrets.get("HUGGINGFACEHUB_API_TOKEN")
+    if not hf_token:
+        st.warning("⚠️ HUGGINGFACEHUB_API_TOKEN not found in environment or secrets. System will run on Retrieval-Only fallback mode.")
+
+    question = st.text_input("🔍 Input query to explore document semantic spaces:")
 
     if question:
-
         vectorstore = load_vectorstore()
+        if vectorstore:
+            start_time = time.time()
+            
+            # Phase 1: Pure Semantic Subspace Vector Retrieval Execution
+            retriever = vectorstore.as_retriever(search_kwargs={"k": k_value})
+            retrieved_docs = retriever.invoke(question)
+            latency = (time.time() - start_time) * 1000
+            
+            logging.info(f"Query: '{question}' processed in {latency:.2f}ms with k={k_value}")
 
-        docs = vectorstore.similarity_search(question, k=3)
+            # Layout Splitting Container Allocation
+            col1, col2 = st.columns([1, 1])
 
-        st.subheader("Retrieved Results")
+            with col1:
+                st.subheader("🤖 Generative LLM Response")
+                if hf_token:
+                    with st.spinner("Synthesizing context matrix paths..."):
+                        try:
+                            # Initialize open-source high-context inference synthesis engine
+                            llm = HuggingFaceEndpoint(
+                                repo_id="meta-llama/Meta-Llama-3-8B-Instruct",
+                                temperature=temperature_value,
+                                huggingfacehub_api_token=hf_token,
+                                max_new_tokens=512
+                            )
+                            
+                            # Construct highly rigid engineering prompt parameters to limit context drift
+                            system_prompt = (
+                                "You are an advanced enterprise document assistant. Use the following pieces of retrieved context "
+                                "to answer the question completely and accurately. If you do not know the answer, state honestly "
+                                "that the document base does not contain sufficient context. Do not make up answers.\n\n"
+                                "Context:\n{context}"
+                            )
+                            prompt = ChatPromptTemplate.from_messages([
+                                ("system", system_prompt),
+                                ("human", "{input}"),
+                            ])
+                            
+                            # Build LangChain Document Combining & Synthesis Chains
+                            question_answer_chain = create_stuff_documents_chain(llm, prompt)
+                            rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+                            
+                            response = rag_chain.invoke({"input": question})
+                            st.write(response["answer"])
+                        except Exception as e:
+                            st.error(f"Generative engine error: {str(e)}")
+                else:
+                    st.info("💡 Provide a HuggingFace hub API Token to enable generative text synthesis layouts.")
 
-        for i, doc in enumerate(docs):
-
-            st.write(f"Result {i+1}:")
-            st.write(doc.page_content)
-            st.write("------")
-
+            with col2:
+                st.subheader("🎯 Semantic Search Retrievals Leaderboard")
+                st.caption(f"Retrieved {len(retrieved_docs)} relevant nodes in {latency:.2f}ms")
+                
+                for i, doc in enumerate(retrieved_docs):
+                    with st.expander(f"📍 Document Chunk Node {i+1} (Source File Path Context)"):
+                        st.write(doc.page_content)
+                        st.markdown(f"**Source Metadata Details:** `{doc.metadata}`")
 
 if __name__ == "__main__":
     main()
+   
