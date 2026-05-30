@@ -41,26 +41,25 @@ def load_vectorstore():
 
 def main():
     st.set_page_config(page_title="Enterprise RAG Ecosystem", page_icon="📊", layout="wide")
-    
+
     # Secure Administrative Login Interface Gateway
     st.sidebar.title("🔐 Production Gateway")
     if "authenticated" not in st.session_state:
         st.session_state["authenticated"] = False
 
     if not st.session_state["authenticated"]:
-    st.title("📊 Enterprise Knowledge Base RAG Ecosystem")
-    st.markdown("---")
-    st.info("👈 Please log in from the sidebar to continue.")
-    user_input = st.sidebar.text_input("Username")
-    password_input = st.sidebar.text_input("Password", type="password")
-    if st.sidebar.button("Login"):
-        if user_input == ADMIN_USER and password_input == ADMIN_PASSWORD:
-            st.session_state["authenticated"] = True
-            st.rerun()
-        else:
-            st.sidebar.error("❌ Invalid Credentials")
-    st.stop()
-
+        st.title("📊 Enterprise Knowledge Base RAG Ecosystem")
+        st.markdown("---")
+        st.info("👈 Please log in from the sidebar to continue.")
+        user_input = st.sidebar.text_input("Username")
+        password_input = st.sidebar.text_input("Password", type="password")
+        if st.sidebar.button("Login"):
+            if user_input == ADMIN_USER and password_input == ADMIN_PASSWORD:
+                st.session_state["authenticated"] = True
+                st.rerun()
+            else:
+                st.sidebar.error("❌ Invalid Credentials")
+        st.stop()
    
     # Main Application Post-Authentication UI Layout
     st.title("📊 Enterprise Knowledge Base RAG Ecosystem")
