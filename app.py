@@ -54,7 +54,7 @@ def main():
             else:
                 st.sidebar.error("❌ Invalid Credentials")
                 
-       st.stop()
+        st.stop()
 
     # Main Application Post-Authentication UI Layout
     st.title("📊 Enterprise Knowledge Base RAG Ecosystem")
