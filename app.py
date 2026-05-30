@@ -94,13 +94,16 @@ def main():
                                 token=hf_token
                             )
                             context_text = "\n\n".join(doc.page_content for doc in retrieved_docs)
-                            full_prompt = f"Context:\n{context_text}\n\nQuestion: {question}\n\nAnswer:"
-                            response = client.text_generation(
-                                full_prompt,
-                                max_new_tokens=512,
+                            messages = [
+                                {"role": "system", "content": "You are a helpful assistant. Answer using only the context provided."},
+                                {"role": "user", "content": f"Context:\n{context_text}\n\nQuestion: {question}"}
+                            ]
+                            response = client.chat_completion(
+                                messages=messages,
+                                max_tokens=512,
                                 temperature=temperature_value
                             )
-                            st.write(response)
+                            st.write(response.choices[0].message.content)
                         except Exception as e:
                             st.error(f"Generative engine error: {str(e)}")
                 else:
