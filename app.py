@@ -17,8 +17,12 @@ logging.basicConfig(
 )
 
 # Enforce secure credentials architecture configuration mapping
-ADMIN_USER = st.secrets["ADMIN_USER"] if "ADMIN_USER" in st.secrets else "admin"
-ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"] if "ADMIN_PASSWORD" in st.secrets else "admin123"
+try:
+    ADMIN_USER = st.secrets["ADMIN_USER"]
+    ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
+except Exception:
+    ADMIN_USER = "admin"
+    ADMIN_PASSWORD = "admin123"
 
 @st.cache_resource
 def load_vectorstore():
