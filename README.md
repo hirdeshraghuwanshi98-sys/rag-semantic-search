@@ -10,7 +10,7 @@ An end-to-end, enterprise-grade Retrieval-Augmented Generation (RAG) platform de
 ---
 
 ## 🚀 Live Production Links & Access
-* **Interactive Frontend Dashboard:** [Streamlit Service UI](https://rag-semantic-search-sfnle2sbzjtx62wfnqucqq.streamlit.app/)
+* **Interactive Frontend Dashboard:** [Streamlit Service UI](https://rag-semantic-search-ems8qse69ayc3cagr4ddq8.streamlit.app/#generative-llm-response)
 
 ### 🔑 Demo Evaluation Credentials
 To bypass the secure access administrative boundary on the live production interface, please utilize the following credentials:
