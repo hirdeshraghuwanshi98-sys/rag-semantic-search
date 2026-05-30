@@ -90,9 +90,11 @@ def main():
                     with st.spinner("Synthesizing response..."):
                         try:
                             client = InferenceClient(
-                                model="HuggingFaceH4/zephyr-7b-beta",
+                                model="mistralai/Mistral-7B-Instruct-v0.3",
+                                provider="hf-inference",
                                 token=hf_token
                             )
+                            
                             context_text = "\n\n".join(doc.page_content for doc in retrieved_docs)
                             messages = [
                                 {"role": "system", "content": "You are a helpful assistant. Answer using only the context provided."},
