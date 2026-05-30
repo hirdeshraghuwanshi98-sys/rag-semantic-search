@@ -17,6 +17,14 @@ To bypass the secure access administrative boundary on the live production inter
 * **Username:** `admin`
 * **Password:** `admin123`
 
+## Dashboard
+
+![Dashboard](dashboard.png)
+
+## Prediction Result
+
+![Prediction](prediction.png) 
+
 ---
 ## Features
 
