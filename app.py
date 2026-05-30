@@ -2,11 +2,9 @@ import streamlit as st
 import os
 import time
 import logging
-from langchain_huggingface import HuggingFaceEmbeddings, HuggingFaceEndpoint
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
+from huggingface_hub import InferenceClient
 
 os.makedirs("logs", exist_ok=True)
 logging.basicConfig(
@@ -36,8 +34,7 @@ def load_vectorstore():
         logging.error(f"Failed to load vector store: {str(e)}")
         st.error("⚠️ Vectorstore not found. Please run 'python ingest.py' first.")
         return None
-        
-st.cache_resource.clear()
+
 def main():
     st.set_page_config(page_title="Enterprise RAG Ecosystem", page_icon="📊", layout="wide")
 
@@ -92,35 +89,17 @@ def main():
                 if hf_token:
                     with st.spinner("Synthesizing response..."):
                         try:
-                            os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
-                            llm = HuggingFaceEndpoint(
-                                repo_id="HuggingFaceH4/zephyr-7b-beta",
-                                task="conversational",
-                                temperature=temperature_value,
-                                max_new_tokens=512
+                            client = InferenceClient(
+                                model="HuggingFaceH4/zephyr-7b-beta",
+                                token=hf_token
                             )
-                            
-                            system_prompt = (
-                                "You are an advanced enterprise document assistant. Use the following pieces of retrieved context "
-                                "to answer the question completely and accurately. If you do not know the answer, state honestly "
-                                "that the document base does not contain sufficient context. Do not make up answers.\n\n"
-                                "Context:\n{context}"
+                            context_text = "\n\n".join(doc.page_content for doc in retrieved_docs)
+                            full_prompt = f"Context:\n{context_text}\n\nQuestion: {question}\n\nAnswer:"
+                            response = client.text_generation(
+                                full_prompt,
+                                max_new_tokens=512,
+                                temperature=temperature_value
                             )
-                            prompt = ChatPromptTemplate.from_messages([
-                                ("system", system_prompt),
-                                ("human", "{input}"),
-                            ])
-
-                            def format_docs(docs):
-                                return "\n\n".join(doc.page_content for doc in docs)
-
-                            rag_chain = (
-                                {"context": retriever | format_docs, "input": RunnablePassthrough()}
-                                | prompt
-                                | llm
-                                | StrOutputParser()
-                            )
-                            response = rag_chain.invoke(question)
                             st.write(response)
                         except Exception as e:
                             st.error(f"Generative engine error: {str(e)}")
