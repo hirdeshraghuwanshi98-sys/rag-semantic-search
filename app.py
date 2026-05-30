@@ -94,9 +94,11 @@ def main():
                             os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
                             llm = HuggingFaceEndpoint(
                                 repo_id="mistralai/Mistral-7B-Instruct-v0.3",
+                                task="conversational",
                                 temperature=temperature_value,
                                 max_new_tokens=512
                             )
+                            
                             system_prompt = (
                                 "You are an advanced enterprise document assistant. Use the following pieces of retrieved context "
                                 "to answer the question completely and accurately. If you do not know the answer, state honestly "
