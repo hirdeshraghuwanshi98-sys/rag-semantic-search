@@ -1,4 +1,4 @@
-# 📂 Enterprise Semantic Search & Conversational RAG Ecosystem
+# 🔍 RAG-Based Semantic Document Search Engine
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)](https://www.python.org/)
 [![LangChain](https://img.shields.io/badge/LangChain-v0.1-green?style=for-the-badge&logo=chainlink)](https://www.langchain.com/)
