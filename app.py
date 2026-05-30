@@ -66,12 +66,53 @@ def main():
     question = st.text_input("🔍 Enter your search query:")
 
     if question:
-        vectorstore = load_vectorstore()
-        if vectorstore:
-            start_time = time.time()
-            retriever = vectorstore.as_retriever(search_kwargs={"k": k_value})
-            retrieved_docs = retriever.invoke(question)
-            latency = (time.time() - start_time) * 1000
+    vectorstore = load_vectorstore()
+    if vectorstore:
+        start_time = time.time()
+        retriever = vectorstore.as_retriever(search_kwargs={"k": k_value})
+        retrieved_docs = retriever.invoke(question)
+        latency = (time.time() - start_time) * 1000
+        logging.info(f"Query: '{question}' processed in {latency:.2f}ms with k={k_value}")
+
+        # Build context from retrieved chunks
+        context = "\n\n".join([doc.page_content for doc in retrieved_docs])
+
+        # Generate answer using Groq LLM
+        try:
+            from groq import Groq
+            groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+            
+            prompt = f"""You are a helpful assistant. 
+Using ONLY the context below, answer the question clearly and concisely.
+If the answer is not in the context, say "I could not find this in the documents."
+
+Context:
+{context}
+
+Question: {question}
+Answer:"""
+
+            llm_response = groq_client.chat.completions.create(
+                model="llama3-8b-8192",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=300
+            )
+            answer = llm_response.choices[0].message.content
+
+            st.subheader("🤖 Generated Answer")
+            st.success(answer)
+
+        except Exception as e:
+            logging.error(f"LLM generation failed: {str(e)}")
+            st.warning("⚠️ LLM answer generation unavailable. Showing raw results only.")
+
+        # Show source chunks below the answer
+        st.subheader("📚 Source Chunks")
+        st.caption(f"Retrieved {len(retrieved_docs)} chunks in {latency:.2f}ms")
+        for i, doc in enumerate(retrieved_docs):
+            with st.expander(f"📍 Source {i+1}"):
+                st.write(doc.page_content)
+                st.markdown(f"**Source:** `{doc.metadata}`")
             logging.info(f"Query: '{question}' processed in {latency:.2f}ms with k={k_value}")
 
             st.subheader("🎯 Search Results")
