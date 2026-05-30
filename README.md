@@ -18,34 +18,96 @@ To bypass the secure access administrative boundary on the live production inter
 * **Password:** `admin123`
 
 ---
+## Features
 
-## 📊 RAG Architecture Performance Metrics
-
-The architecture uses an isolated pipeline executing dynamic semantic ranking across local data matrices.
-
-| Retrieval Vector Store Engine | Embeddings Model Layer | Synthesis LLM Engine | Average Search Latency | Cost Mapping | Status |
-| :--- | :--- | :--- | :---: | :---: | :---: |
-| **Meta FAISS (CPU-Optimized)** | **all-MiniLM-L6-v2** | **Llama-3-8B-Instruct** | **~140ms** | 💰 **$0.00 (Free)** | 🏆 **Active Champion** |
+- Semantic search over documents
+- PDF and TXT support
+- Vector similarity retrieval
+- FAISS vector database
+- Streamlit web interface
+- Hugging Face embeddings
+- Login-based access control
+- Query latency metrics
+- Completely FREE (No OpenAI billing)
 
 ---
 
-## 🛠️ Step-by-Step System Walkthrough
+## Tech Stack
+
+- Python
+- LangChain
+- Hugging Face Sentence Transformers
+- FAISS
+- Streamlit
+
+---
+---
+
+## How It Works
 
 ### Step 1: Knowledge Base Ingestion (`ingest.py`)
-Parses, normalizes, chunks text payload components using a recursive text splitter matrix, calculates mathematical multi-dimensional dense embeddings, and registers index targets safely.
+Parses PDF and TXT documents, splits them into chunks using a recursive text splitter, generates dense vector embeddings using Hugging Face Sentence Transformers, and saves the FAISS index locally for fast retrieval.
 
-<img src="images/prediction.png" alt="Knowledge Base Vector Ingestion Pipeline Visualization" width="100%">
-
-### Step 2: Conversational UI & Synthesis Dashboard (`app.py`)
-Loads local indexing parameters, handles administrative layer validations, scales query context inputs, metrics execution logs, and presents fully contextualized LLM answers.
-
-<img src="images/dashboard.png" alt="Streamlit RAG Conversational Evaluation Interface" width="100%">
+### Step 2: Search Dashboard (`app.py`)
+Loads the local FAISS index, handles login-based access control, accepts user queries, performs semantic similarity search, logs query latency metrics, and displays the most relevant document chunks with source metadata.
 
 ---
 
+## Installation
+
+```bash
+git clone https://github.com/hirdeshraghuwanshi98-sys/rag-semantic-search.git
+cd rag-semantic-search
+pip install -r requirements.txt
+```
+
+---
+
+## Run Locally
+
+```bash
+python ingest.py
+streamlit run app.py
+```
+
+---
+
+```
+
+---
+
+## Live Demo
+
+https://rag-semantic-search-gfggptft4ekgecvqftgenp.streamlit.app/
+
+---
+
+## Resume Description
+
+Developed a semantic search system using LangChain, Hugging Face embeddings, and FAISS to retrieve relevant information from PDF and text documents through vector similarity search, deployed on Streamlit Cloud with login-based access control and query latency logging.
+
+---
+
+## Future Improvements
+
+- LLM answer generation via Groq
+- Multi-document upload UI
+- Conversational memory
+- Cloud vector database
 ## 📂 Repository Blueprint
 
 ```text
+## Project Architecture
+User Query
+↓
+Embedding Generation (all-MiniLM-L6-v2)
+↓
+FAISS Similarity Search
+↓
+Retrieve Relevant Chunks
+↓
+Display Results with Metadata
+
 rag-semantic-search/
 │
 ├── ingest.py                 # Automated document processing & vector storage generator
