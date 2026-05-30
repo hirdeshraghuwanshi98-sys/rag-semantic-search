@@ -16,17 +16,19 @@ try:
     ADMIN_USER = st.secrets["ADMIN_USER"]
     ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
 except Exception:
-    ADMIN_USER = "admin"
-    ADMIN_PASSWORD = "admin123"
+    ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
+    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
 
 @st.cache_resource
 def load_vectorstore():
     try:
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        # Vectorstore is self-generated locally — deserialization is safe
+# as the pickle files are produced by our own ingest.py pipeline
         vectorstore = FAISS.load_local(
             "vectorstore",
             embeddings,
-            allow_dangerous_deserialization=True
+            allow_dangerous_deserialization=True    # Safe: index built locally by ingest.py
         )
         return vectorstore
     except Exception as e:
