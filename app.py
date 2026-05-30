@@ -36,7 +36,8 @@ def load_vectorstore():
         logging.error(f"Failed to load vector store: {str(e)}")
         st.error("⚠️ Vectorstore not found. Please run 'python ingest.py' first.")
         return None
-
+        
+st.cache_resource.clear()
 def main():
     st.set_page_config(page_title="Enterprise RAG Ecosystem", page_icon="📊", layout="wide")
 
@@ -93,7 +94,7 @@ def main():
                         try:
                             os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
                             llm = HuggingFaceEndpoint(
-                                repo_id="mistralai/Mistral-7B-Instruct-v0.3",
+                                repo_id="HuggingFaceH4/zephyr-7b-beta",
                                 task="conversational",
                                 temperature=temperature_value,
                                 max_new_tokens=512
