@@ -4,8 +4,8 @@ import time
 import logging
 from langchain_huggingface import HuggingFaceEmbeddings, HuggingFaceEndpoint
 from langchain_community.vectorstores import FAISS
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
 # Ensure log directory layout exists
@@ -113,24 +113,29 @@ def main():
                             ])
                             
                             # Build LangChain Document Combining & Synthesis Chains
-                            question_answer_chain = create_stuff_documents_chain(llm, prompt)
-                            rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-                            
-                            response = rag_chain.invoke({"input": question})
-                            st.write(response["answer"])
+                            def format_docs(docs):
+                                return "\n\n".join(doc.page_content for doc in docs)
+                                rag_chain = (
+                                    {"context": retriever | format_docs, "input": RunnablePassthrough()}
+                                    | prompt
+                                    | llm
+                                    | StrOutputParser()
+                                )
+                                response = rag_chain.invoke(question)
+                                st.write(response)
                         except Exception as e:
                             st.error(f"Generative engine error: {str(e)}")
-                else:
-                    st.info("💡 Provide a HuggingFace hub API Token to enable generative text synthesis layouts.")
-
-            with col2:
-                st.subheader("🎯 Semantic Search Retrievals Leaderboard")
-                st.caption(f"Retrieved {len(retrieved_docs)} relevant nodes in {latency:.2f}ms")
+                        else:
+                            st.info("💡 Provide a HuggingFace hub API Token to enable generative text synthesis layouts.")
+                            
+                            with col2:
+                                st.subheader("🎯 Semantic Search Retrievals Leaderboard")
+                                st.caption(f"Retrieved {len(retrieved_docs)} relevant nodes in {latency:.2f}ms")
                 
                 for i, doc in enumerate(retrieved_docs):
                     with st.expander(f"📍 Document Chunk Node {i+1} (Source File Path Context)"):
                         st.write(doc.page_content)
                         st.markdown(f"**Source Metadata Details:** `{doc.metadata}`")
-
-if __name__ == "__main__":
-    main()
+                        
+                        if __name__ == "__main__": 
+                            main()
