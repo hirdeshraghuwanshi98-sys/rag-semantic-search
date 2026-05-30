@@ -5,7 +5,7 @@ from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
-# Establish runtime diagnostic logging configurations
+# Configure file-based logging
 os.makedirs("logs", exist_ok=True)
 logging.basicConfig(
     filename="logs/rag_system.log",
@@ -49,7 +49,7 @@ def main():
         logging.warning("Ingestion stopped: Empty source document array context.")
         return
 
-    # Structure Recursive Character Splitting Matrix Rules
+    # Split documents into overlapping chunks
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=600,
         chunk_overlap=75,
@@ -59,14 +59,14 @@ def main():
     print(f"📦 Document decomposition verified: Generated {len(chunks)} high-density context chunks.")
     logging.info(f"Decomposed documentation landscape into {len(chunks)} isolated chunk vectors.")
 
-    # Calculate dense high-dimensional vectors maps
+    # Generate sentence embeddings
     print("🧠 Computing multi-dimensional embedding matrices via all-MiniLM-L6-v2...")
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     
     print("💾 Indexing metadata vectors inside local Meta FAISS data structures...")
     vectorstore = FAISS.from_documents(chunks, embeddings)
     
-    # Persist serialized matrix binaries directly into structural disk directories
+    # Save FAISS index to disk
     vectorstore.save_local("vectorstore")
     print("🏆 Production Vector Database constructed and written to /vectorstore/ successfully!")
     logging.info("Vector database compilation task execution run closed successfully.")
