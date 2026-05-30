@@ -93,7 +93,7 @@ def main():
                         try:
                             os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
                             llm = HuggingFaceEndpoint(
-                                repo_id="meta-llama/Meta-Llama-3-8B-Instruct",
+                                repo_id="mistralai/Mistral-7B-Instruct-v0.3",
                                 temperature=temperature_value,
                                 max_new_tokens=512
                             )
