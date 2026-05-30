@@ -1,5 +1,3 @@
----
-```python
 import streamlit as st
 import os
 import time
@@ -134,4 +132,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-   
