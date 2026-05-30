@@ -1,11 +1,12 @@
 streamlit>=1.35.0
-langchain>=0.1.0
-langchain-community>=0.0.30
-langchain-huggingface>=0.0.1
+langchain>=0.2.0
+langchain-community>=0.2.0
+langchain-huggingface>=0.0.3
+langchain-core>=0.2.0
 sentence-transformers>=2.5.0
 faiss-cpu>=1.8.0
 pypdf>=4.1.0
-langchain-text-splitters>=0.0.1
-huggingface_hub>=0.21.0
+langchain-text-splitters>=0.2.0
+huggingface_hub>=0.23.0
 torch>=2.2.0
 transformers>=4.38.0
