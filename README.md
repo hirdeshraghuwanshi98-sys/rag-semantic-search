@@ -25,43 +25,39 @@ To bypass the secure access administrative boundary on the live production inter
 
 ![Prediction](prediction.png) 
 
----
-## Features
+# RAG Semantic Search
 
-- Semantic search over documents
-- PDF and TXT support
-- Vector similarity retrieval
-- FAISS vector database
-- Streamlit web interface
-- Hugging Face embeddings
-- Login-based access control
-- Query latency metrics
-- Completely FREE (No OpenAI billing)
+A small semantic search engine over your own PDF/TXT documents, built with
+LangChain, Hugging Face sentence embeddings, and FAISS. Type a natural-language
+question and get back the most relevant chunks of text — with an optional
+LLM-generated answer on top.
 
----
+## How it works
 
-## Tech Stack
+```
+Your documents (.pdf / .txt)
+        ↓
+Split into chunks (RecursiveCharacterTextSplitter)
+        ↓
+Embed each chunk (all-MiniLM-L6-v2)
+        ↓
+Store vectors in a FAISS index
+        ↓
+User query → embedded the same way → compared via cosine similarity
+        ↓
+Top-k most similar chunks returned (+ optional LLM answer)
+```
+
+## Tech stack
 
 - Python
 - LangChain
-- Hugging Face Sentence Transformers
-- FAISS
-- Streamlit
+- Hugging Face Sentence Transformers (`all-MiniLM-L6-v2`)
+- FAISS (vector similarity search)
+- Streamlit (UI)
+- Groq (optional — generates a natural-language answer from retrieved chunks)
 
----
----
-
-## How It Works
-
-### Step 1: Knowledge Base Ingestion (`ingest.py`)
-Parses PDF and TXT documents, splits them into chunks using a recursive text splitter, generates dense vector embeddings using Hugging Face Sentence Transformers, and saves the FAISS index locally for fast retrieval.
-
-### Step 2: Search Dashboard (`app.py`)
-Loads the local FAISS index, handles login-based access control, accepts user queries, performs semantic similarity search, logs query latency metrics, and displays the most relevant document chunks with source metadata.
-
----
-
-## Installation
+## Setup
 
 ```bash
 git clone https://github.com/hirdeshraghuwanshi98-sys/rag-semantic-search.git
@@ -69,48 +65,35 @@ cd rag-semantic-search
 pip install -r requirements.txt
 ```
 
----
-
-## Run Locally
+Drop your `.pdf` / `.txt` files into `/documents`, then:
 
 ```bash
-python ingest.py
-streamlit run app.py
+python ingest.py        # builds the FAISS vector index
+streamlit run app.py    # launches the search UI
 ```
 
----
+## Project structure
 
 ```
+rag-semantic-search/
+├── ingest.py          # loads documents, chunks them, builds the FAISS index
+├── app.py             # Streamlit UI for querying the index
+├── documents/         # put your source .pdf / .txt files here
+├── vectorstore/        # generated FAISS index (index.faiss, index.pkl)
+├── requirements.txt
+└── README.md
+```
+
+
+## Possible extensions
+
+- Multi-document upload through the UI
+- Conversational memory across queries
+- Swap FAISS for a hosted vector DB (Pinecone, Qdrant)
+- 
 
 ---
-
-## Live Demo
-
-https://rag-semantic-search-gfggptft4ekgecvqftgenp.streamlit.app/
-
----
-
-## Resume Description
-
-Developed a semantic search system using LangChain, Hugging Face embeddings, and FAISS to retrieve relevant information from PDF and text documents through vector similarity search, deployed on Streamlit Cloud with login-based access control and query latency logging.
-
----
-
-## Future Improvements
-
-- LLM answer generation via Groq
-- Multi-document upload UI
-- Conversational memory
-- Cloud vector database
-## 📂 Repository Blueprint
-
-```text
-## Project Architecture
-User Query
-↓
-Embedding Generation (all-MiniLM-L6-v2)
-↓
-FAISS Similarity Search
+## FAISS Similarity Search
 ↓
 Retrieve Relevant Chunks
 ↓
