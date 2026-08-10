@@ -66,7 +66,7 @@ def main():
     question = st.text_input("🔍 Enter your search query:")
 
     if question:
-    vectorstore = load_vectorstore()
+        vectorstore = load_vectorstore()
     if vectorstore:
         start_time = time.time()
         retriever = vectorstore.as_retriever(search_kwargs={"k": k_value})
