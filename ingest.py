@@ -1,75 +1,59 @@
+"""
+Ingest documents from /documents, split into chunks, embed them,
+and save a FAISS vector index to /vectorstore.
+
+Run this once before starting the app: python ingest.py
+"""
+
 import os
-import logging
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
-# Configure file-based logging
-os.makedirs("logs", exist_ok=True)
-logging.basicConfig(
-    filename="logs/rag_system.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+DOCS_FOLDER = "documents"
+EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+
 
 def load_documents():
+    """Load every .txt and .pdf file from the documents folder."""
     docs = []
-    folder_path = "documents"
-    
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-        logging.warning(f"Created target directory root '{folder_path}' because it did not exist.")
-        return docs
+    os.makedirs(DOCS_FOLDER, exist_ok=True)
 
-    for file in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, file)
-        try:
-            if file.endswith(".txt"):
-                loader = TextLoader(file_path, encoding="utf-8")
-                docs.extend(loader.load())
-                logging.info(f"Successfully processed plain-text node asset: {file}")
-            elif file.endswith(".pdf"):
-                loader = PyPDFLoader(file_path)
-                docs.extend(loader.load())
-                logging.info(f"Successfully processed document PDF layout: {file}")
-        except Exception as e:
-            logging.error(f"Failed to ingest file tracking row {file}: {str(e)}")
-            
+    for filename in os.listdir(DOCS_FOLDER):
+        path = os.path.join(DOCS_FOLDER, filename)
+
+        if filename.endswith(".txt"):
+            docs.extend(TextLoader(path, encoding="utf-8").load())
+        elif filename.endswith(".pdf"):
+            docs.extend(PyPDFLoader(path).load())
+
     return docs
 
+
 def main():
-    print("🚀 Initializing Enterprise Ingestion Sequence Engine...")
-    logging.info("Starting knowledge base pipeline synchronization run.")
-    
+    print("Loading documents...")
     documents = load_documents()
-    
+
     if not documents:
-        print("❌ Ingestion halted: No viable .pdf or .txt source documents found in /documents/ target folder.")
-        logging.warning("Ingestion stopped: Empty source document array context.")
+        print("No .txt or .pdf files found in /documents. Add some and rerun.")
         return
 
-    # Split documents into overlapping chunks
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=600,
-        chunk_overlap=75,
-        add_start_index=True
-    )
+    # Step 1: split documents into overlapping chunks
+    splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=75)
     chunks = splitter.split_documents(documents)
-    print(f"📦 Document decomposition verified: Generated {len(chunks)} high-density context chunks.")
-    logging.info(f"Decomposed documentation landscape into {len(chunks)} isolated chunk vectors.")
+    print(f"Split {len(documents)} document(s) into {len(chunks)} chunks.")
 
-    # Generate sentence embeddings
-    print("🧠 Computing multi-dimensional embedding matrices via all-MiniLM-L6-v2...")
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    
-    print("💾 Indexing metadata vectors inside local Meta FAISS data structures...")
+    # Step 2: embed each chunk into a vector
+    print(f"Generating embeddings with {EMBEDDING_MODEL}...")
+    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+
+    # Step 3: build and save the FAISS vector index
     vectorstore = FAISS.from_documents(chunks, embeddings)
-    
-    # Save FAISS index to disk
     vectorstore.save_local("vectorstore")
-    print("🏆 Production Vector Database constructed and written to /vectorstore/ successfully!")
-    logging.info("Vector database compilation task execution run closed successfully.")
+    print("Vector index saved to /vectorstore.")
+
 
 if __name__ == "__main__":
     main()
+    
