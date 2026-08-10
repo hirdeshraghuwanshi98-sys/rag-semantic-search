@@ -80,7 +80,7 @@ def main():
         context = "\n\n".join([doc.page_content for doc in retrieved_docs])
 
         # Generate answer using Groq LLM
-        try:
+try:
     from groq import Groq
 
     try:
