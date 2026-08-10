@@ -81,32 +81,56 @@ def main():
 
         # Generate answer using Groq LLM
         try:
-            from groq import Groq
-            groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-            
-            prompt = f"""You are a helpful assistant. 
-Using ONLY the context below, answer the question clearly and concisely.
-If the answer is not in the context, say "I could not find this in the documents."
+    from groq import Groq
+
+    try:
+        GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+    except Exception:
+        GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+
+    groq_client = Groq(api_key=GROQ_API_KEY)
+
+    prompt = f"""
+You are a helpful assistant.
+
+Using ONLY the context below, answer the question clearly
+and concisely.
+
+If the answer is not in the context, say:
+"I could not find this in the documents."
 
 Context:
 {context}
 
-Question: {question}
-Answer:"""
+Question:
+{question}
 
-            llm_response = groq_client.chat.completions.create(
-                model="llama3-8b-8192",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=300
-            )
-            answer = llm_response.choices[0].message.content
+Answer:
+"""
 
-            st.subheader("🤖 Generated Answer")
-            st.success(answer)
+    llm_response = groq_client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        max_tokens=300
+    )
 
-        except Exception as e:
-            logging.error(f"LLM generation failed: {str(e)}")
-            st.warning("⚠️ LLM answer generation unavailable. Showing raw results only.")
+    answer = llm_response.choices[0].message.content
+
+    st.subheader("🤖 Generated Answer")
+    st.success(answer)
+
+except Exception as e:
+    logging.error(f"LLM generation failed: {str(e)}")
+    st.warning(
+        "⚠️ LLM answer generation unavailable. "
+        "Showing raw results only."
+    )
+        
 
         # Show source chunks below the answer
         st.subheader("📚 Source Chunks")
