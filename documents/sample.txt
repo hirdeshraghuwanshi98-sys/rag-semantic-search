@@ -1,2 +1,321 @@
-Retrieval-Augmented Generation (RAG) is a technique that combines information retrieval with large language models.
-It retrieves relevant documents and uses them as context to generate more accurate answers.
+JAVA FULL STACK DEVELOPMENT AND AI/ML INTERVIEW KNOWLEDGE
+
+1. JAVA FUNDAMENTALS
+
+Java is an object-oriented, class-based programming language designed to be platform independent. Java source code is compiled into bytecode, which runs on the Java Virtual Machine (JVM).
+
+The main principles of Object-Oriented Programming are encapsulation, inheritance, polymorphism, and abstraction.
+
+Encapsulation means wrapping data and methods together inside a class and controlling access using access modifiers such as private, protected, and public.
+
+Inheritance allows one class to acquire properties and behavior from another class. Java supports inheritance using the extends keyword.
+
+Polymorphism allows the same method or interface to behave differently depending on the object. Method overloading is compile-time polymorphism, while method overriding is runtime polymorphism.
+
+Abstraction hides implementation details and exposes only essential functionality. In Java, abstraction can be achieved using abstract classes and interfaces.
+
+An interface defines a contract that implementing classes must follow. Java allows a class to implement multiple interfaces.
+
+The JVM executes Java bytecode. The JDK contains development tools such as the Java compiler, while the JRE provides the environment required to run Java applications.
+
+
+2. JAVA COLLECTIONS
+
+The Java Collections Framework provides classes and interfaces for storing and manipulating groups of objects.
+
+ArrayList is a resizable array that provides fast random access using indexes. It is useful when frequent read operations are required.
+
+LinkedList stores elements using linked nodes. It can be useful when frequent insertion and deletion operations are performed.
+
+HashSet stores unique elements and does not guarantee insertion order.
+
+HashMap stores data as key-value pairs. Keys are unique, and values can be duplicated.
+
+A HashMap provides average O(1) time complexity for insertion and lookup when hash distribution is good.
+
+The main difference between ArrayList and LinkedList is their internal structure. ArrayList uses a dynamic array, while LinkedList uses linked nodes.
+
+
+3. EXCEPTION HANDLING
+
+Exception handling allows Java applications to handle runtime problems without abruptly terminating the program.
+
+The main keywords used for exception handling are try, catch, finally, throw, and throws.
+
+A checked exception is checked at compile time and generally must be handled or declared.
+
+An unchecked exception occurs at runtime and generally extends RuntimeException.
+
+The finally block is commonly used for cleanup operations and normally executes whether an exception occurs or not.
+
+
+4. SPRING AND SPRING BOOT
+
+Spring is a Java framework used to build enterprise applications. Spring Boot simplifies Spring application development by providing auto-configuration, starter dependencies, and an embedded server.
+
+Dependency Injection is a design technique where an object's dependencies are provided from outside instead of the object creating them itself.
+
+Inversion of Control means that the Spring container manages the creation and lifecycle of application objects called beans.
+
+Common Spring annotations include @Component, @Service, @Repository, @Controller, @RestController, @Autowired, and @Bean.
+
+A REST API allows applications to communicate over HTTP.
+
+Common HTTP methods are GET for retrieving data, POST for creating data, PUT for updating data, and DELETE for removing data.
+
+In Spring Boot, @RestController is commonly used to create REST endpoints.
+
+A typical Spring Boot application can be organized into Controller, Service, Repository, and Entity layers.
+
+The Controller handles HTTP requests, the Service contains business logic, and the Repository communicates with the database.
+
+
+5. SPRING DATA JPA AND HIBERNATE
+
+Spring Data JPA simplifies database access in Spring Boot applications.
+
+JPA is a specification for object-relational mapping, while Hibernate is a popular implementation of JPA.
+
+ORM maps Java objects to relational database tables.
+
+An entity class represents a database table. The @Entity annotation is used to mark a Java class as a JPA entity.
+
+@Id identifies the primary key of an entity.
+
+Spring Data JPA repositories provide methods for common database operations such as saving, finding, updating, and deleting records.
+
+Using JPA reduces the amount of SQL and boilerplate database access code that developers need to write.
+
+
+6. SPRING SECURITY AND JWT
+
+Spring Security provides authentication and authorization features for Java applications.
+
+Authentication verifies who the user is, while authorization determines what the authenticated user is allowed to access.
+
+JWT stands for JSON Web Token. It is commonly used to implement stateless authentication for REST APIs.
+
+A JWT generally contains a header, payload, and signature.
+
+After successful login, the server can issue a JWT to the client. The client sends the token with subsequent requests, usually through the Authorization header.
+
+A common format is:
+
+Authorization: Bearer <token>
+
+The server validates the JWT before allowing access to protected endpoints.
+
+
+7. DATABASE AND SQL
+
+A relational database stores data in tables consisting of rows and columns.
+
+SQL is used to create, retrieve, update, and delete relational data.
+
+SELECT is used to retrieve data.
+
+INSERT is used to add new records.
+
+UPDATE is used to modify existing records.
+
+DELETE is used to remove records.
+
+A primary key uniquely identifies each record in a table.
+
+A foreign key creates a relationship between tables.
+
+JOIN operations are used to combine related data from multiple tables.
+
+INNER JOIN returns matching records from both tables.
+
+LEFT JOIN returns all records from the left table and matching records from the right table.
+
+Normalization is a database design technique used to reduce data redundancy and improve data consistency.
+
+
+8. REACT
+
+React is a JavaScript library used to build user interfaces, especially single-page applications.
+
+React applications are built using reusable components.
+
+A component represents a reusable part of the user interface.
+
+Props are used to pass data from a parent component to a child component.
+
+State stores data that can change during the lifetime of a component.
+
+The useState hook is commonly used to manage state in functional components.
+
+The useEffect hook is commonly used for side effects such as API calls.
+
+React can communicate with a backend through REST APIs.
+
+Fetch and Axios are commonly used to send HTTP requests from React applications.
+
+
+9. MACHINE LEARNING FUNDAMENTALS
+
+Machine Learning is a branch of Artificial Intelligence in which computers learn patterns from data and use those patterns to make predictions or decisions.
+
+Supervised learning uses labeled training data. Common supervised learning problems include classification and regression.
+
+Classification predicts a category or class. Examples include spam detection, disease detection, and customer churn prediction.
+
+Regression predicts a continuous numerical value. Examples include house price prediction and sales forecasting.
+
+Unsupervised learning works with data that does not have labeled target values.
+
+Clustering is an unsupervised learning technique used to group similar data points.
+
+Common clustering algorithms include K-Means and hierarchical clustering.
+
+
+10. COMMON MACHINE LEARNING ALGORITHMS
+
+Linear Regression is a supervised learning algorithm used mainly for predicting continuous numerical values.
+
+Logistic Regression is commonly used for binary and multiclass classification problems.
+
+K-Nearest Neighbors predicts the class of a data point based on nearby training examples.
+
+Decision Trees make predictions by creating a sequence of decision rules based on feature values.
+
+Random Forest combines multiple decision trees to produce a more robust prediction.
+
+Support Vector Machine finds a decision boundary that separates classes and can also be used for regression.
+
+XGBoost is a gradient boosting algorithm that combines multiple weak learners to create a strong predictive model.
+
+K-Means clustering divides data into a predefined number of groups called clusters.
+
+
+11. MACHINE LEARNING PIPELINE
+
+A typical machine learning pipeline consists of data collection, data cleaning, exploratory data analysis, preprocessing, feature engineering, model training, model evaluation, and deployment.
+
+Data preprocessing may include handling missing values, encoding categorical variables, scaling numerical features, and removing unwanted data.
+
+Feature engineering creates useful input features from existing data.
+
+The dataset is commonly divided into training and testing sets.
+
+The training set is used to learn patterns, while the test set is used to evaluate how well the model generalizes to unseen data.
+
+
+12. MODEL EVALUATION
+
+Classification models can be evaluated using accuracy, precision, recall, F1-score, and confusion matrix.
+
+Accuracy represents the proportion of correctly classified observations.
+
+Precision measures how many predicted positive observations are actually positive.
+
+Recall measures how many actual positive observations are correctly identified.
+
+F1-score is the harmonic mean of precision and recall.
+
+For regression problems, common metrics include Mean Absolute Error, Mean Squared Error, and R-squared.
+
+
+13. OVERFITTING AND UNDERFITTING
+
+Overfitting occurs when a machine learning model learns the training data too closely and performs poorly on unseen data.
+
+Underfitting occurs when the model is too simple to capture important patterns in the data.
+
+Techniques to reduce overfitting include cross-validation, regularization, feature selection, pruning, and using more training data.
+
+
+14. GENERATIVE AI AND RAG
+
+Generative AI refers to AI systems that can generate new content such as text, images, code, or audio.
+
+Large Language Models are neural network models trained on large amounts of text data and are capable of understanding and generating natural language.
+
+Retrieval-Augmented Generation, or RAG, combines information retrieval with a language model.
+
+In a RAG system, documents are first divided into smaller chunks. Each chunk is converted into a vector embedding and stored in a vector database.
+
+When a user asks a question, the question is converted into an embedding. The system performs similarity search to retrieve the most relevant document chunks.
+
+The retrieved information is then provided as context to the language model, which generates an answer based on that context.
+
+RAG is useful when an application needs to answer questions using private, domain-specific, or frequently changing documents.
+
+
+15. RAG SEMANTIC SEARCH PROJECT
+
+The RAG Semantic Search project is a Python-based application that allows users to ask natural-language questions about their own PDF and TXT documents.
+
+The application uses LangChain for document processing, Hugging Face Sentence Transformers for generating embeddings, FAISS for vector similarity search, and Streamlit for the user interface.
+
+The document ingestion pipeline reads documents, splits them into smaller chunks using RecursiveCharacterTextSplitter, generates embeddings using the all-MiniLM-L6-v2 model, and stores the vectors in a FAISS index.
+
+During a search, the user's question is converted into an embedding using the same embedding model.
+
+FAISS compares the query vector with stored document vectors and retrieves the most semantically similar chunks.
+
+The retrieved chunks can be displayed directly or provided to an LLM such as a Groq-hosted model to generate a natural-language response.
+
+The main advantage of semantic search is that it searches based on meaning rather than requiring an exact keyword match.
+
+
+16. EXAMPLE RAG QUESTIONS
+
+The following questions can be answered if the relevant information exists in the indexed documents:
+
+What is dependency injection?
+
+What is the difference between JDK, JRE, and JVM?
+
+What is the difference between ArrayList and LinkedList?
+
+What is Spring Boot?
+
+What is REST API?
+
+What is JWT authentication?
+
+What is JPA and Hibernate?
+
+What is React?
+
+What is supervised learning?
+
+What is classification?
+
+What is regression?
+
+What is Random Forest?
+
+What is overfitting?
+
+What is precision and recall?
+
+What is RAG?
+
+How does FAISS work?
+
+Why are embeddings used in semantic search?
+
+What is the difference between RAG and a normal LLM chatbot?
+
+
+17. KEY INTERVIEW DIFFERENCES
+
+Authentication answers the question "Who are you?" while authorization answers "What are you allowed to do?"
+
+JDK is used to develop Java applications, JRE provides the runtime environment, and JVM executes Java bytecode.
+
+JPA is a specification, while Hibernate is an implementation of JPA.
+
+Spring provides the framework and features, while Spring Boot simplifies configuration and application setup.
+
+Classification predicts categories, while regression predicts continuous numerical values.
+
+Supervised learning uses labeled data, while unsupervised learning works with unlabeled data.
+
+Traditional keyword search looks for matching words, while semantic search uses embeddings to find conceptually similar content.
+
+A normal LLM generates responses from its learned knowledge and provided prompt context. RAG first retrieves relevant information from an external knowledge base and provides that information to the LLM as context.
