@@ -65,6 +65,8 @@ def main():
 
     question = st.text_input("🔍 Enter your search query:")
 
+    vectorstore = None
+
     if question:
         vectorstore = load_vectorstore()
     if vectorstore:
